@@ -21,7 +21,7 @@ function App() {
   }, []);
 
   return (
-    <div className="flex flex-col items-center min-h-screen bg-gray-800 p-4">
+    <div className="flex flex-col items-center bg-gradient-to-br from-slate-800 to-slate-900 min-h-screen p-4">
       <Header />
       <div className='w-full max-w-screen p-4'>
         <DateTimePicker onDateTimeChange={handleTimeChange} />
