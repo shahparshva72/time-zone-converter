@@ -36,7 +36,7 @@ const TimeZoneList: React.FC<TimeZoneListProps> = ({ selectedTime }) => {
 
         try {
           const response = await fetch(
-            `https://maps.googleapis.com/maps/api/timezone/json?location=${lat},${lng}×tamp=${Math.floor(
+            `https://maps.googleapis.com/maps/api/timezone/json?location=${lat},${lng}&timestamp=${Math.floor(
               selectedTime.getTime() / 1000
             )}&key=${googleMapsApiKey}`
           );
@@ -99,6 +99,15 @@ const TimeZoneList: React.FC<TimeZoneListProps> = ({ selectedTime }) => {
     }
   };
 
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      const place = autocompleteRef.current?.getPlace();
+      if (place) {
+        handlePlaceSelect(place);
+      }
+    }
+  };
+
   if (!isLoaded) {
     return <div className="text-white">Loading...</div>;
   }
@@ -121,6 +130,7 @@ const TimeZoneList: React.FC<TimeZoneListProps> = ({ selectedTime }) => {
             type="text"
             placeholder="Search for a City"
             className="form-input block max-w-xs w-full px-3 py-2 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+            onKeyPress={handleKeyPress}
           />
         </Autocomplete>
       </div>
