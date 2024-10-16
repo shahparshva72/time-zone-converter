@@ -59,38 +59,45 @@ Badge.propTypes = {
 };
 
 interface TimeZoneCardProps {
+  placeName: string;
   timeZone: string;
-  onDelete: (timeZone: string) => void;
+  time: string;
+  date: string;
+  isDaytime: boolean;
+  onDelete: (placeName: string) => void;
   selectedTime: Date;
 }
 
-const TimeZoneCard: React.FC<TimeZoneCardProps> = ({ timeZone, onDelete, selectedTime }) => {
-  const { offset, time, date, isDaytime } = useMemo(() => {
+const TimeZoneCard: React.FC<TimeZoneCardProps> = ({
+  placeName,
+  timeZone,
+  time,
+  date,
+  isDaytime,
+  onDelete,
+  selectedTime,
+}) => {
+  const { offset } = useMemo(() => {
     const now = moment(selectedTime).tz(timeZone);
     return {
       offset: now.format("Z"),
-      time: now.format("HH:mm"),
-      date: now.format("MMM D, YYYY"),
-      isDaytime: now.hour() >= 6 && now.hour() < 18,
     };
   }, [timeZone, selectedTime]);
 
   const handleDelete = useCallback(
-    () => onDelete(timeZone),
-    [onDelete, timeZone],
+    () => onDelete(placeName),
+    [onDelete, placeName],
   );
 
   return (
     <Card className="overflow-hidden">
-      <div
-        className={`p-4 ${isDaytime ? "bg-gradient-to-br from-blue-400 to-blue-600" : "bg-gradient-to-br from-indigo-800 to-purple-900"}`}
-      >
+      <div className={`p-4 ${isDaytime ? "bg-pastel-orange" : "bg-teal-500"}`}>
         <div className="flex justify-between items-center mb-2">
-          <h3 className="font-bold text-lg text-white">{timeZone}</h3>
+          <h3 className="font-bold text-lg text-white">{placeName}</h3>
           {isDaytime ? (
-            <Sun className="text-yellow-300" />
+            <Sun className="text-white size-6" />
           ) : (
-            <Moon className="text-gray-300" />
+            <Moon className="text-white size-6" />
           )}
         </div>
         <div className="text-3xl font-bold text-white mb-1">{time}</div>
@@ -114,7 +121,11 @@ const TimeZoneCard: React.FC<TimeZoneCardProps> = ({ timeZone, onDelete, selecte
 };
 
 TimeZoneCard.propTypes = {
+  placeName: PropTypes.string.isRequired,
   timeZone: PropTypes.string.isRequired,
+  time: PropTypes.string.isRequired,
+  date: PropTypes.string.isRequired,
+  isDaytime: PropTypes.bool.isRequired,
   onDelete: PropTypes.func.isRequired,
   selectedTime: PropTypes.instanceOf(Date).isRequired,
 };

@@ -2,6 +2,7 @@ import TimeZoneCard from "./TimeZoneCard";
 import PropTypes from "prop-types";
 
 interface TimeZone {
+  placeName: string;
   timeZone: string;
   time: string;
   date: string;
@@ -10,22 +11,26 @@ interface TimeZone {
 
 interface TimeZonesGridProps {
   timeZoneList: TimeZone[];
-  onDeleteTimeZone: (timeZone: string) => void;
+  onDeleteLocation: (placeName: string) => void;
   selectedTime: Date;
 }
 
 const TimeZonesGrid: React.FC<TimeZonesGridProps> = ({
   timeZoneList,
-  onDeleteTimeZone,
+  onDeleteLocation,
   selectedTime,
 }) => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-6">
       {timeZoneList.map((tz) => (
         <TimeZoneCard
-          key={tz.timeZone}
+          key={tz.placeName}
+          placeName={tz.placeName}
           timeZone={tz.timeZone}
-          onDelete={onDeleteTimeZone}
+          time={tz.time}
+          date={tz.date}
+          isDaytime={tz.isDaytime}
+          onDelete={() => onDeleteLocation(tz.placeName)}
           selectedTime={selectedTime}
         />
       ))}
@@ -34,8 +39,16 @@ const TimeZonesGrid: React.FC<TimeZonesGridProps> = ({
 };
 
 TimeZonesGrid.propTypes = {
-  timeZoneList: PropTypes.arrayOf(PropTypes.object).isRequired,
-  onDeleteTimeZone: PropTypes.func.isRequired,
+  timeZoneList: PropTypes.arrayOf(
+    PropTypes.shape({
+      placeName: PropTypes.string.isRequired,
+      timeZone: PropTypes.string.isRequired,
+      time: PropTypes.string.isRequired,
+      date: PropTypes.string.isRequired,
+      isDaytime: PropTypes.bool.isRequired,
+    }).isRequired
+  ).isRequired,
+  onDeleteLocation: PropTypes.func.isRequired,
   selectedTime: PropTypes.instanceOf(Date).isRequired,
 };
 
